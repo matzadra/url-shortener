@@ -20,9 +20,8 @@ services:
       - db
     networks:
       - shortener-network
-    environment:
-      - DATABASE_URL=postgresql://user:password@db:5432/shortener_db
-      - NODE_ENV=production
+    env_file:
+      - .env
     entrypoint: ["sh", "entrypoint.sh"]
 
 volumes:
