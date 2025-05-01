@@ -22,8 +22,8 @@ services:
       - shortener-network
     environment:
       - DATABASE_URL=postgresql://user:password@db:5432/shortener_db
-    working_dir: /app
-    command: npm run start:prod
+      - NODE_ENV=production
+    entrypoint: ["sh", "entrypoint.sh"]
 
 volumes:
   postgres-data:
