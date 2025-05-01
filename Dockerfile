@@ -1,23 +1,24 @@
-# Usa imagem oficial do Node
+# Imagem base oficial do Node
 FROM node:20
 
-# Cria pasta de trabalho
+# Diretório de trabalho no container
 WORKDIR /app
 
-# Copia apenas o package.json e package-lock.json da pasta app
+# Copia apenas os arquivos de dependência
 COPY app/package*.json ./
 
-# Instala dependências
-RUN npm install
+# Define ambiente como produção e instala só o necessário
+ENV NODE_ENV=production
+RUN npm install --omit=dev
 
-# Copia todo o projeto da pasta app
+# Copia o restante do projeto
 COPY app .
 
-# Builda o projeto NestJS (gera /dist)
+# Compila a aplicação
 RUN npm run build
 
-# Expor a porta usada pelo app
+# Expõe a porta padrão
 EXPOSE 3000
 
-# Rodar o app compilado
+# Comando para iniciar a aplicação
 CMD ["node", "dist/main"]
