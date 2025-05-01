@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { RegisterDto } from './dto/register.dto';
-import { LoginDto } from './dto/login.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+} from "@nestjs/common";
+import { RegisterDto } from "./dto/register.dto";
+import { LoginDto } from "./dto/login.dto";
+import { PrismaService } from "../prisma/prisma.service";
+import { JwtService } from "@nestjs/jwt";
+import * as bcrypt from "bcryptjs";
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly jwtService: JwtService,
+    private readonly jwtService: JwtService
   ) {}
 
   async register(registerDto: RegisterDto) {
@@ -20,7 +24,7 @@ export class AuthService {
     });
 
     if (existingUser) {
-      throw new Error('Usuário já registrado.');
+      throw new ConflictException("Usuário já registrado.");
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -46,14 +50,8 @@ export class AuthService {
       where: { email },
     });
 
-    if (!user) {
-      throw new Error('Credenciais inválidas.');
-    }
-
-    const passwordValid = await bcrypt.compare(password, user.password);
-
-    if (!passwordValid) {
-      throw new Error('Credenciais inválidas.');
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException("Credenciais inválidas.");
     }
 
     const payload = { email: user.email, sub: user.id };
