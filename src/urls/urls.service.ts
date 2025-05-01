@@ -42,6 +42,7 @@ export class UrlsService {
       data: {
         originalUrl: updateUrlDto.originalUrl,
         updatedAt: new Date(),
+        userId: url.userId,
       },
     });
   }
