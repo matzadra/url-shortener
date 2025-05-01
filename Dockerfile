@@ -1,24 +1,27 @@
-# Imagem base oficial do Node
+# Usa imagem oficial do Node
 FROM node:20
 
-# Diretório de trabalho no container
-WORKDIR /app
+# Define o diretório de trabalho dentro do container
+WORKDIR /usr/src/app
 
-# Copia apenas os arquivos de dependência
-COPY app/package*.json ./
+# Insatala netcat no container pra esperar db subir
+RUN apt-get update && apt-get install -y netcat-openbsd
 
-# Define ambiente como produção e instala só o necessário
+# Copia arquivos de dependência
+COPY package*.json ./
+
+# Define ambiente de produção e instala só dependências necessárias
 ENV NODE_ENV=production
 RUN npm install --omit=dev
 
 # Copia o restante do projeto
-COPY app .
+COPY . .
 
-# Compila a aplicação
+# Compila o projeto (gera /dist)
 RUN npm run build
 
-# Expõe a porta padrão
+# Expõe a porta padrão da aplicação
 EXPOSE 3000
 
-# Comando para iniciar a aplicação
+# Inicia a aplicação compilada
 CMD ["node", "dist/main"]
