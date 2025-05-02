@@ -28,19 +28,22 @@ npm run start:dev
 Copie o `.env` de exemplo e ajuste conforme o ambiente:
 
 ```env
-DATABASE_URL=postgresql://user:password@localhost:5432/shortener_db
-JWT_SECRET=secreta
+# URL de conexão com banco PostgreSQL usado pelo Prisma
+DATABASE_URL=postgresql://user:password@db:5432/shortener_db
+JWT_SECRET=secret
+# Define o ambiente da aplicação (development | production)
+NODE_ENV=development
 PORT=3000
 ```
-
+Essas são as únicas variáveis obrigatórias para o funcionamento da aplicação.
+Nenhum Redis, toggle ou config adicional é necessário.
 ---
 
 ## 📈 Scripts disponíveis
 
 ```bash
 npm run start:dev       # Inicia o servidor em modo desenvolvimento
-npm run test            # Roda os testes unitários (Jest ainda não implementado)
-npm run test:e2e        # Roda os testes e2e (ainda não implementados)
+npm run test            # Roda os testes unitários (Jest apenas para urls.service)
 npm run lint            # Executa o lint
 ```
 
@@ -80,8 +83,7 @@ src
 * [x] Proteção com guards e validação via DTOs
 * [x] Validação via DTO com class-validator em todas as entradas
 * [x] Documentação Swagger na rota `/api`
-* [ ] Testes unitários e2e
-* [ ] Deploy cloud
+* [x] Testes unitários (apenas para urls.service)
 
 ---
 
@@ -92,7 +94,7 @@ src
 | `refactor/project-structure` | Setup inicial, Docker e estrutura base |
 | `feature/auth-jwt`           | Autenticação completa via JWT          |
 | `feature/urls-crud`          | CRUD de URLs + acesso opcional         |
-
+| `test/unit-urls`             | Testes unitários para url.service      |
 ---
 
 ## ✅ Entregas conforme solicitado no desafio técnico
@@ -109,18 +111,14 @@ Este projeto atende aos seguintes pontos obrigatórios:
 * ✅ README com instruções e pontos de escalabilidade
 * ✅ Validações de entrada com decorators (`class-validator`)
 * ✅ Documentação completa com Swagger (`/api`)
-
-> Estrutura para testes já configurada.
+⚠️ Testes unitários implementados apenas para url.service
 
 ---
 
 ## 💡 Pontos para escalar horizontalmente
 
 * Centralizar a configuração do Prisma para conexões concorrentes
-* Cache de URLs curtas com Redis
-* Separar domínio de users para microsserviço
-* Adicionar rate limiter por IP/token
-* Implementar logs estruturados e toggle de observabilidade via `.env`
+* Implementar logs estruturados
 
 ---
 
