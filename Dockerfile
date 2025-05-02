@@ -18,10 +18,13 @@ RUN npm install --omit=dev
 COPY . .
 
 # Compila o projeto (gera /dist)
-RUN npm run build
+RUN npm run build && npx prisma generate --schema=./prisma/schema.prisma
+
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
 
 # Expõe a porta padrão da aplicação
 EXPOSE 3000
 
 # Inicia a aplicação compilada
-CMD ["node", "dist/main"]
+CMD ["./entrypoint.sh"]

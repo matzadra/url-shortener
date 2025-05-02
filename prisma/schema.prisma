@@ -7,6 +7,7 @@ datasource db {
 // Gerador de client Prisma
 generator client {
   provider = "prisma-client-js"
+  output = "../node_modules/.prisma/client"
 }
 
 // Modelagem
