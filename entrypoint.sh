@@ -13,8 +13,7 @@ if [ "$NODE_ENV" = "production" ]; then
 else
   echo "Rodando migrations (dev)..."
   npx prisma migrate dev
-  npx prisma db seed
+  npx prisma db seed || echo "Seed falhou (OK por enquanto)"
 fi
 
-echo "Banco ok. Subindo o app."
-exec npm run start:prod
+exec node dist/main
