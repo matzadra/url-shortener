@@ -23,3 +23,6 @@ prisma/.env
 # Docker
 docker-compose.override.yml
 *.local.yml
+
+# any
+ROADMAP.md
