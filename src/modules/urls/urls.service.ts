@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../../database/prisma.service";
-import { CreateUrlDto } from "./dto/create-url.dto";
-import { UpdateUrlDto } from "./dto/update-url.dto";
+import { PrismaService } from "@db/prisma.service";
+import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
+import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
 import { randomBytes } from "crypto";
 
 @Injectable()

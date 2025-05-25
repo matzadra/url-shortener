@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
-import { UrlsController } from "./urls.controller";
-import { UrlsService } from "./urls.service";
+import { UrlsController } from "@modules/urls/urls.controller";
+import { UrlsService } from "@modules/urls/urls.service";
 
 @Module({
   controllers: [UrlsController],

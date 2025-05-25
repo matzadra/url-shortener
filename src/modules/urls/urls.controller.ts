@@ -12,11 +12,11 @@ import {
   HttpCode,
   UseGuards,
 } from "@nestjs/common";
-import { UrlsService } from "./urls.service";
-import { CreateUrlDto } from "./dto/create-url.dto";
-import { UpdateUrlDto } from "./dto/update-url.dto";
-import { JwtAuthGuard } from "../auth/guards/jwt.auth.guard";
-import { OptionalJwtAuthGuard } from "../auth/guards/optional-jwt.guard";
+import { UrlsService } from "@modules/urls/urls.service";
+import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
+import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
+import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
+import { OptionalJwtAuthGuard } from "@modules/auth/guards/optional-jwt.guard";
 import { Request, Response } from "express";
 
 @Controller("urls")

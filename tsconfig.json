@@ -9,7 +9,7 @@
     "target": "ES2021",
     "sourceMap": true,
     "outDir": "./dist",
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -18,10 +18,9 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@modules/*": ["src/modules/*"],
-      "@core/*": ["src/core/*"],
-      "@db/*": ["src/database/*"],
-      "@shared/*": ["src/shared/*"]
+      "@modules/*": ["modules/*"],
+      "@db/*": ["database/*"],
+      "@shared/*": ["shared/*"]
     }
   }
 }
