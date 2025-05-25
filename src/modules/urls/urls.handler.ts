@@ -20,7 +20,7 @@ import { OptionalJwtAuthGuard } from "@modules/auth/guards/optional-jwt.guard";
 import { Request, Response } from "express";
 
 @Controller("urls")
-export class UrlsController {
+export class UrlsHandler {
   constructor(private readonly urlsService: UrlsService) {}
 
   @HttpCode(201)
@@ -52,7 +52,7 @@ export class UrlsController {
     return this.urlsService.remove(Number(id));
   }
 
-  @Get("/:shortUrl")
+  @Get(":/shortUrl")
   async redirect(@Param("shortUrl") shortUrl: string, @Res() res: Response) {
     const url = await this.urlsService.findOne(shortUrl);
 
