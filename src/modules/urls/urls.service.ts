@@ -1,16 +1,15 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UrlsRepository } from "@modules/urls/urls.repository";
-import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
-import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
-import { randomBytes } from "crypto";
+import { UrlEntity } from "@modules/urls/entities/url.entity";
+import { UrlDto } from "@modules/urls/dto/url.dto";
 
 @Injectable()
 export class UrlsService {
   constructor(private readonly urlsRepository: UrlsRepository) {}
 
-  async create(userId: number | null, createUrlDto: CreateUrlDto) {
-    const shortUrl = randomBytes(3).toString("hex");
-    return this.urlsRepository.create(userId, createUrlDto, shortUrl);
+  async create(userId: number | null, dto: UrlDto) {
+    const entity = new UrlEntity(dto.originalUrl, userId);
+    return this.urlsRepository.createFromEntity(entity);
   }
 
   async findAll(userId: number) {
@@ -21,12 +20,15 @@ export class UrlsService {
     return this.urlsRepository.findByShortUrl(shortUrl);
   }
 
-  async update(id: number, updateUrlDto: UpdateUrlDto) {
+  async update(id: number, dto: UrlDto) {
     const url = await this.urlsRepository.findById(id);
     if (!url || url.deletedAt) {
       throw new NotFoundException("URL não encontrada para atualização");
     }
-    return this.urlsRepository.updateById(id, updateUrlDto, url.userId);
+    return this.urlsRepository.updateById(id, {
+      originalUrl: dto.originalUrl,
+      userId: url.userId,
+    });
   }
 
   async remove(id: number, userId: number) {

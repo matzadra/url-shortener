@@ -1,23 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "@db/prisma.service";
-import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
-import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
+import { UrlEntity } from "@modules/urls/entities/url.entity";
 
 @Injectable()
 export class UrlsRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(
-    userId: number | null,
-    createUrlDto: CreateUrlDto,
-    shortUrl: string
-  ) {
+  async createFromEntity(entity: UrlEntity) {
     return this.prisma.url.create({
-      data: {
-        originalUrl: createUrlDto.originalUrl,
-        shortUrl,
-        userId,
-      },
+      data: entity.toPersistence(),
     });
   }
 
@@ -37,13 +28,12 @@ export class UrlsRepository {
     return this.prisma.url.findUnique({ where: { id } });
   }
 
-  async updateById(id: number, updateUrlDto: UpdateUrlDto, userId: number) {
+  async updateById(id: number, data: { originalUrl: string; userId: number }) {
     return this.prisma.url.update({
       where: { id },
       data: {
-        originalUrl: updateUrlDto.originalUrl,
+        ...data,
         updatedAt: new Date(),
-        userId,
       },
     });
   }
@@ -60,7 +50,9 @@ export class UrlsRepository {
   async incrementClicksByShortUrl(shortUrl: string) {
     return this.prisma.url.updateMany({
       where: { shortUrl, deletedAt: null },
-      data: { clicks: { increment: 1 } },
+      data: {
+        clicks: { increment: 1 },
+      },
     });
   }
 }

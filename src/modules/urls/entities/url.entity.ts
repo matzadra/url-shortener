@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto";
 
 export class UrlEntity {
-  public readonly shortUrl: string;
+  private readonly shortUrl: string;
 
   constructor(
     public readonly originalUrl: string,
@@ -15,7 +15,15 @@ export class UrlEntity {
     return randomBytes(3).toString("hex");
   }
 
-  toPersistence() {
+  getShortUrl(): string {
+    return this.shortUrl;
+  }
+
+  toPersistence(): {
+    originalUrl: string;
+    shortUrl: string;
+    userId: number | null;
+  } {
     return {
       originalUrl: this.originalUrl,
       shortUrl: this.shortUrl,

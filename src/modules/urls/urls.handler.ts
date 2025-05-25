@@ -12,8 +12,7 @@ import {
   ParseIntPipe,
 } from "@nestjs/common";
 import { UrlsService } from "@modules/urls/urls.service";
-import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
-import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
+import { UrlDto } from "@modules/urls/dto/url.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { OptionalJwtAuthGuard } from "@modules/auth/guards/optional-jwt.guard";
 import { UserId } from "@shared/decorators/user-id.decorator";
@@ -25,7 +24,7 @@ export class UrlsHandler {
   @HttpCode(201)
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
-  create(@UserId() userId: number | null, @Body() dto: CreateUrlDto) {
+  create(@UserId() userId: number | null, @Body() dto: UrlDto) {
     return this.urlsService.create(userId, dto);
   }
 
@@ -38,7 +37,7 @@ export class UrlsHandler {
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   @Put(":id")
-  update(@Param("id", ParseIntPipe) id: number, @Body() dto: UpdateUrlDto) {
+  update(@Param("id", ParseIntPipe) id: number, @Body() dto: UrlDto) {
     return this.urlsService.update(id, dto);
   }
 
