@@ -47,10 +47,12 @@ export class UrlsService {
     });
   }
 
-  async remove(id: number) {
+  async remove(id: number, userId: number) {
     const url = await this.prisma.url.findUnique({ where: { id } });
-    if (!url || url.deletedAt) {
-      throw new NotFoundException("URL não encontrada ou já excluída");
+    if (!url || url.deletedAt || url.userId !== userId) {
+      throw new NotFoundException(
+        "URL não encontrada, já excluída ou não pertence ao usuário"
+      );
     }
     return this.prisma.url.update({
       where: { id },
@@ -65,5 +67,19 @@ export class UrlsService {
       where: { shortUrl, deletedAt: null },
       data: { clicks: { increment: 1 } },
     });
+  }
+
+  async handleRedirect(shortUrl: string) {
+    const url = await this.prisma.url.findFirst({
+      where: { shortUrl, deletedAt: null },
+    });
+    if (!url) {
+      throw new NotFoundException("URL não encontrada");
+    }
+    await this.prisma.url.updateMany({
+      where: { shortUrl, deletedAt: null },
+      data: { clicks: { increment: 1 } },
+    });
+    return url;
   }
 }

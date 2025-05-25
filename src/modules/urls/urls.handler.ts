@@ -6,18 +6,17 @@ import {
   Param,
   Put,
   Delete,
-  Req,
-  Res,
-  NotFoundException,
   HttpCode,
   UseGuards,
+  Redirect,
+  ParseIntPipe,
 } from "@nestjs/common";
 import { UrlsService } from "@modules/urls/urls.service";
 import { CreateUrlDto } from "@modules/urls/dto/create-url.dto";
 import { UpdateUrlDto } from "@modules/urls/dto/update-url.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { OptionalJwtAuthGuard } from "@modules/auth/guards/optional-jwt.guard";
-import { Request, Response } from "express";
+import { UserId } from "@shared/decorators/user-id.decorator";
 
 @Controller("urls")
 export class UrlsHandler {
@@ -26,42 +25,34 @@ export class UrlsHandler {
   @HttpCode(201)
   @UseGuards(OptionalJwtAuthGuard)
   @Post()
-  create(@Req() req: Request, @Body() createUrlDto: CreateUrlDto) {
-    const userId = req.user?.["userId"] || null;
-    return this.urlsService.create(userId, createUrlDto);
+  create(@UserId() userId: number | null, @Body() dto: CreateUrlDto) {
+    return this.urlsService.create(userId, dto);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  findAll(@Req() req: Request) {
-    const userId = req.user["userId"];
+  findAll(@UserId() userId: number) {
     return this.urlsService.findAll(userId);
   }
 
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   @Put(":id")
-  update(@Param("id") id: string, @Body() updateUrlDto: UpdateUrlDto) {
-    return this.urlsService.update(Number(id), updateUrlDto);
+  update(@Param("id", ParseIntPipe) id: number, @Body() dto: UpdateUrlDto) {
+    return this.urlsService.update(id, dto);
   }
 
   @HttpCode(204)
   @UseGuards(JwtAuthGuard)
   @Delete(":id")
-  remove(@Param("id") id: string) {
-    return this.urlsService.remove(Number(id));
+  remove(@Param("id", ParseIntPipe) id: number, @UserId() userId: number) {
+    return this.urlsService.remove(id, userId);
   }
 
-  @Get(":/shortUrl")
-  async redirect(@Param("shortUrl") shortUrl: string, @Res() res: Response) {
-    const url = await this.urlsService.findOne(shortUrl);
-
-    if (!url) {
-      throw new NotFoundException("URL não encontrada");
-    }
-
-    await this.urlsService.incrementClicks(shortUrl);
-
-    return res.redirect(url.originalUrl);
+  @Get(":shortUrl")
+  @Redirect()
+  async redirect(@Param("shortUrl") shortUrl: string) {
+    const url = await this.urlsService.handleRedirect(shortUrl);
+    return { url: url.originalUrl };
   }
 }
