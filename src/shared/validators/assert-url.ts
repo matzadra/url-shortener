@@ -19,3 +19,12 @@ export function assertUrlOwner(
     throw new ForbiddenException(message);
   }
 }
+
+export function assertShortUrlExists(
+  url: Url | null,
+  message: string = "Short URL não encontrada"
+): asserts url is Url {
+  if (!url) {
+    throw new NotFoundException(message);
+  }
+}

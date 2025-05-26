@@ -37,8 +37,12 @@ export class UrlsHandler {
   @HttpCode(200)
   @UseGuards(JwtAuthGuard)
   @Put(":id")
-  update(@Param("id", ParseIntPipe) id: number, @Body() dto: UrlDto) {
-    return this.urlsService.update(id, dto);
+  update(
+    @Param("id", ParseIntPipe) id: number,
+    @UserId() userId: number,
+    @Body() dto: UrlDto
+  ) {
+    return this.urlsService.update(id, userId, dto);
   }
 
   @HttpCode(204)
@@ -52,6 +56,6 @@ export class UrlsHandler {
   @Redirect()
   async redirect(@Param("shortUrl") shortUrl: string) {
     const url = await this.urlsService.handleRedirect(shortUrl);
-    return { url: url.originalUrl };
+    return { url };
   }
 }
