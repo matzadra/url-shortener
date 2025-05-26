@@ -41,10 +41,6 @@ export class UrlsService {
     return this.urlsRepository.softDeleteById(id);
   }
 
-  async incrementClicks(shortUrl: string) {
-    return this.urlsRepository.incrementClicksByShortUrl(shortUrl);
-  }
-
   async handleRedirect(shortUrl: string) {
     const url = await this.urlsRepository.findByShortUrl(shortUrl);
     if (!url) {
