@@ -1,36 +1,38 @@
-import { Injectable, ConflictException } from "@nestjs/common";
-import { PrismaService } from "@db/prisma.service";
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { RegisterDto } from "@modules/auth/dto/register.dto";
-import * as bcrypt from "bcryptjs";
+import { UserEntity } from "@modules/users/entities/user.entity";
+import { UsersRepository } from "@modules/users/users.repository";
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly usersRepository: UsersRepository) {}
 
-  async register(registerDto: RegisterDto) {
-    const { email, password } = registerDto;
-
-    const existingUser = await this.prisma.user.findUnique({
-      where: { email },
-    });
-
-    if (existingUser) {
+  async register(dto: RegisterDto): Promise<UserEntity> {
+    const existing = await this.usersRepository.findByEmail(dto.email);
+    if (existing) {
       throw new ConflictException("Usuário já registrado.");
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const entity = await UserEntity.create(dto.email, dto.password);
+    return this.usersRepository.createFromEntity(entity);
+  }
 
-    const user = await this.prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-      },
-    });
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.usersRepository.findByEmail(email);
+    if (!user) {
+      throw new NotFoundException("Usuário não encontrado.");
+    }
 
-    return {
-      id: user.id,
-      email: user.email,
-      createdAt: user.createdAt,
-    };
+    return new UserEntity(user.id, user.email, user.password, user.createdAt);
+  }
+
+  async findById(id: number): Promise<UserEntity> {
+    const user = await this.usersRepository.findById(id);
+    if (!user) throw new NotFoundException("Usuário não encontrado.");
+    return new UserEntity(user.id, user.email, user.password, user.createdAt);
   }
 }
