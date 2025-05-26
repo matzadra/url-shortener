@@ -1,9 +1,10 @@
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "@modules/auth/dto/login.dto";
+import { AuthResponseDto } from "@modules/auth/dto/auth-response.dto";
 import { UsersService } from "@modules/users/users.service";
 import { UserEntity } from "@modules/users/entities/user.entity";
-import { assertUserCredencials } from "@shared/validators/assert-auth";
+import { assertUserCredentials } from "@shared/validators/assert-auth";
 
 @Injectable()
 export class AuthService {
@@ -12,17 +13,23 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async login(dto: LoginDto): Promise<{ accessToken: string }> {
+  async login(dto: LoginDto): Promise<AuthResponseDto> {
     const user = await this.usersService.findByEmail(dto.email);
-    await assertUserCredencials(user, dto.password);
+    await assertUserCredentials(user, dto.password);
     const token = await this.generateToken(user);
     return { accessToken: token };
   }
 
   private generateToken(user: UserEntity) {
-    return this.jwtService.signAsync({
-      sub: user.id,
-      email: user.email,
-    });
+    return this.jwtService.signAsync(
+      {
+        sub: user.id,
+        email: user.email,
+      },
+      {
+        expiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
+        subject: String(user.id),
+      }
+    );
   }
 }

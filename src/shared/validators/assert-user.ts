@@ -1,7 +1,7 @@
 import { UserEntity } from "@modules/users/entities/user.entity";
 import { ConflictException, NotFoundException } from "@nestjs/common";
 
-export function assertUserExists(
+export function assertUserAlreadyExists(
   user: UserEntity | null,
   message: string = "Usuário já registrado"
 ): asserts user is UserEntity {

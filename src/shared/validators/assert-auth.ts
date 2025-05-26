@@ -1,7 +1,7 @@
 import { UserEntity } from "@modules/users/entities/user.entity";
 import { NotFoundException } from "@nestjs/common";
 
-export async function assertUserCredencials(
+export async function assertUserCredentials(
   user: UserEntity | null,
   password: string,
   message: string = "Credenciais inválidas."
