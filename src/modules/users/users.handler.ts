@@ -10,6 +10,7 @@ import { UsersService } from "@modules/users/users.service";
 import { RegisterDto } from "@modules/users/dto/register.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { UserId } from "@shared/decorators/user-id.decorator";
+import { PublicUserDto } from "@modules/users/dto/public-user.dto";
 
 @Controller("users")
 export class UsersHandler {
@@ -21,14 +22,10 @@ export class UsersHandler {
     return this.usersService.register(dto);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get("me")
+  @UseGuards(JwtAuthGuard)
   async getMe(@UserId() userId: number) {
     const user = await this.usersService.findById(userId);
-    return {
-      id: user.id,
-      email: user.email,
-      createdAt: user.createdAt,
-    };
+    return new PublicUserDto(user);
   }
 }

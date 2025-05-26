@@ -6,15 +6,17 @@ import { UserEntity } from "@modules/users/entities/user.entity";
 export class UsersRepository {
   constructor(private readonly prisma: PrismaService) {}
 
-  async findByEmail(email: string) {
-    return this.prisma.user.findUnique({ where: { email } });
+  async findByEmail(email: string): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({ where: { email } });
+    return user ? new UserEntity(user) : null;
   }
 
-  async findById(id: number) {
-    return this.prisma.user.findUnique({ where: { id } });
+  async findById(id: number): Promise<UserEntity | null> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+    return user ? new UserEntity(user) : null;
   }
 
-  async createFromEntity(entity: UserEntity) {
+  async createFromEntity(entity: UserEntity): Promise<UserEntity> {
     const created = await this.prisma.user.create({
       data: {
         email: entity.email,
@@ -22,11 +24,6 @@ export class UsersRepository {
       },
     });
 
-    return new UserEntity(
-      created.id,
-      created.email,
-      created.password,
-      created.createdAt
-    );
+    return new UserEntity(created);
   }
 }
