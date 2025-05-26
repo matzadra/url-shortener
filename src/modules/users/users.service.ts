@@ -26,13 +26,12 @@ export class UsersService {
     if (!user) {
       throw new NotFoundException("Usuário não encontrado.");
     }
-
-    return new UserEntity(user.id, user.email, user.password, user.createdAt);
+    return user;
   }
 
   async findById(id: number): Promise<UserEntity> {
     const user = await this.usersRepository.findById(id);
     if (!user) throw new NotFoundException("Usuário não encontrado.");
-    return new UserEntity(user.id, user.email, user.password, user.createdAt);
+    return user;
   }
 }

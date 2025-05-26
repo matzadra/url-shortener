@@ -19,7 +19,8 @@ export class UsersHandler {
   @HttpCode(201)
   @Post()
   async register(@Body() dto: RegisterDto) {
-    return this.usersService.register(dto);
+    const created = await this.usersService.register(dto);
+    return new PublicUserDto(created);
   }
 
   @Get("me")

@@ -8,12 +8,12 @@ export class UsersRepository {
 
   async findByEmail(email: string): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({ where: { email } });
-    return user ? new UserEntity(user) : null;
+    return user ? UserEntity.fromPrisma(user) : null;
   }
 
   async findById(id: number): Promise<UserEntity | null> {
     const user = await this.prisma.user.findUnique({ where: { id } });
-    return user ? new UserEntity(user) : null;
+    return user ? UserEntity.fromPrisma(user) : null;
   }
 
   async createFromEntity(entity: UserEntity): Promise<UserEntity> {

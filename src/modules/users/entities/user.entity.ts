@@ -19,6 +19,20 @@ export class UserEntity {
     this.createdAt = props.createdAt;
   }
 
+  static fromPrisma(raw: {
+    id: number;
+    email: string;
+    password: string;
+    createdAt: Date;
+  }) {
+    return new UserEntity({
+      id: raw.id,
+      email: raw.email,
+      password: raw.password,
+      createdAt: raw.createdAt,
+    });
+  }
+
   static async create(email: string, rawPassword: string): Promise<UserEntity> {
     const hash = await bcrypt.hash(rawPassword, 10);
     return new UserEntity({
