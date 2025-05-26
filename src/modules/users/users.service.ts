@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { RegisterDto } from "@modules/auth/dto/register.dto";
+import { RegisterDto } from "@modules/users/dto/register.dto";
 import { UserEntity } from "@modules/users/entities/user.entity";
 import { UsersRepository } from "@modules/users/users.repository";
 

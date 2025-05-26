@@ -1,16 +1,14 @@
-// Fonte de dados: PostgreSQL
+// Data Source: PostgreSQL
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-// Gerador de client Prisma
+// Client Prisma Generator
 generator client {
   provider = "prisma-client-js"
   output = "../node_modules/.prisma/client"
 }
-
-// Modelagem
 
 model User {
   id        Int      @id @default(autoincrement())
@@ -18,7 +16,7 @@ model User {
   password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  urls      Url[]    // Um usuário tem várias URLs encurtadas
+  urls      Url[]    
 }
 
 model Url {

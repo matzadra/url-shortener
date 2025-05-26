@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { UsersService } from "@modules/users/users.service";
-import { RegisterDto } from "@modules/auth/dto/register.dto";
+import { RegisterDto } from "@modules/users/dto/register.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { UserId } from "@shared/decorators/user-id.decorator";
 
