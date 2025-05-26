@@ -4,10 +4,10 @@ import { UrlEntity } from "@modules/urls/entities/url.entity";
 import { UrlDto } from "@modules/urls/dto/url.dto";
 import {
   assertUrlOwner,
-  assertUrlFound,
+  assertUrlExists,
   assertShortUrlExists,
+  assertOriginalUrlReachable,
 } from "@shared/validators/assert-url";
-import { assertOriginalUrlReachable } from "@shared/validators/url-validator";
 import { Url } from "@prisma/client";
 @Injectable()
 export class UrlsService {
@@ -28,7 +28,7 @@ export class UrlsService {
 
   async update(id: number, userId: number, dto: UrlDto): Promise<Url> {
     const url = await this.urlsRepository.findById(id);
-    assertUrlFound(url);
+    assertUrlExists(url);
     assertUrlOwner(url, userId);
     return this.urlsRepository.updateById(id, {
       originalUrl: dto.originalUrl,
@@ -38,7 +38,7 @@ export class UrlsService {
 
   async remove(id: number, userId: number): Promise<Url> {
     const url = await this.urlsRepository.findById(id);
-    assertUrlFound(url);
+    assertUrlExists(url);
     assertUrlOwner(url, userId);
 
     return this.urlsRepository.softDeleteById(id);
