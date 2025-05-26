@@ -7,10 +7,10 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { UsersService } from "@modules/users/users.service";
-import { RegisterUserDto } from "@modules/users/dto/register-user.dto";
+import { UserRegisterDto } from "@modules/users/dto/register-user.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { UserId } from "@shared/decorators/user-id.decorator";
-import { PublicUserDto } from "@modules/users/dto/public-user.dto";
+import { UserPublicDto } from "@modules/users/dto/public-user.dto";
 
 @Controller("users")
 export class UsersHandler {
@@ -18,15 +18,15 @@ export class UsersHandler {
 
   @HttpCode(201)
   @Post()
-  async register(@Body() dto: RegisterUserDto) {
+  async register(@Body() dto: UserRegisterDto) {
     const created = await this.usersService.registerNewUser(dto);
-    return new PublicUserDto(created);
+    return UserPublicDto.fromEntity(created);
   }
 
   @Get("me")
   @UseGuards(JwtAuthGuard)
   async getMe(@UserId() userId: number) {
     const user = await this.usersService.findById(userId);
-    return new PublicUserDto(user);
+    return UserPublicDto.fromEntity(user);
   }
 }

@@ -3,7 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { RegisterUserDto } from "@modules/users/dto/register-user.dto";
+import { UserRegisterDto } from "@modules/users/dto/register-user.dto";
 import { UserEntity } from "@modules/users/entities/user.entity";
 import { UsersRepository } from "@modules/users/users.repository";
 import {
@@ -14,7 +14,7 @@ import {
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async registerNewUser(dto: RegisterUserDto): Promise<UserEntity> {
+  async registerNewUser(dto: UserRegisterDto): Promise<UserEntity> {
     const user = await this.usersRepository.findByEmail(dto.email);
     assertUserExists(user);
     const entity = await UserEntity.createNew(dto.email, dto.password);

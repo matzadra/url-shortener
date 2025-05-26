@@ -1,11 +1,12 @@
 import * as bcrypt from "bcryptjs";
 
 export type UserEntityProps = {
-  id: number;
+  id?: number;
   email: string;
   password: string;
-  createdAt: Date;
+  createdAt?: Date;
 };
+
 export class UserEntity {
   public readonly id: number;
   public readonly email: string;
@@ -13,24 +14,14 @@ export class UserEntity {
   public readonly createdAt: Date;
 
   constructor(props: UserEntityProps) {
-    this.id = props.id;
+    this.id = props.id ?? 0;
     this.email = props.email;
     this.password = props.password;
-    this.createdAt = props.createdAt;
+    this.createdAt = props.createdAt ?? new Date();
   }
 
-  static fromPrisma(raw: {
-    id: number;
-    email: string;
-    password: string;
-    createdAt: Date;
-  }) {
-    return new UserEntity({
-      id: raw.id,
-      email: raw.email,
-      password: raw.password,
-      createdAt: raw.createdAt,
-    });
+  static fromPrisma(raw: UserEntityProps) {
+    return new UserEntity(raw);
   }
 
   static async createNew(
@@ -38,12 +29,7 @@ export class UserEntity {
     rawPassword: string
   ): Promise<UserEntity> {
     const hashedPassword = await bcrypt.hash(rawPassword, 10);
-    return new UserEntity({
-      id: 0,
-      email,
-      password: hashedPassword,
-      createdAt: new Date(),
-    });
+    return new UserEntity({ email, password: hashedPassword });
   }
 
   async comparePassword(raw: string): Promise<boolean> {
