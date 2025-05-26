@@ -33,12 +33,15 @@ export class UserEntity {
     });
   }
 
-  static async create(email: string, rawPassword: string): Promise<UserEntity> {
-    const hash = await bcrypt.hash(rawPassword, 10);
+  static async createNew(
+    email: string,
+    rawPassword: string
+  ): Promise<UserEntity> {
+    const hashedPassword = await bcrypt.hash(rawPassword, 10);
     return new UserEntity({
       id: 0,
       email,
-      password: hash,
+      password: hashedPassword,
       createdAt: new Date(),
     });
   }

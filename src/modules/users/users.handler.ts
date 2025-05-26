@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from "@nestjs/common";
 import { UsersService } from "@modules/users/users.service";
-import { RegisterDto } from "@modules/users/dto/register.dto";
+import { RegisterUserDto } from "@modules/users/dto/register-user.dto";
 import { JwtAuthGuard } from "@modules/auth/guards/jwt.auth.guard";
 import { UserId } from "@shared/decorators/user-id.decorator";
 import { PublicUserDto } from "@modules/users/dto/public-user.dto";
@@ -18,8 +18,8 @@ export class UsersHandler {
 
   @HttpCode(201)
   @Post()
-  async register(@Body() dto: RegisterDto) {
-    const created = await this.usersService.register(dto);
+  async register(@Body() dto: RegisterUserDto) {
+    const created = await this.usersService.registerNewUser(dto);
     return new PublicUserDto(created);
   }
 
