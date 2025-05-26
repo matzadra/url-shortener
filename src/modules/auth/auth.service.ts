@@ -2,6 +2,8 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "@modules/auth/dto/login.dto";
 import { UsersService } from "@modules/users/users.service";
+import { UserEntity } from "@modules/users/entities/user.entity";
+import { assertUserCredencials } from "@shared/validators/assert-auth";
 
 @Injectable()
 export class AuthService {
@@ -10,19 +12,14 @@ export class AuthService {
     private readonly jwtService: JwtService
   ) {}
 
-  async login(dto: LoginDto) {
+  async login(dto: LoginDto): Promise<{ accessToken: string }> {
     const user = await this.usersService.findByEmail(dto.email);
-    const isValid = await user.comparePassword(dto.password);
-
-    if (!isValid) {
-      throw new UnauthorizedException("Credenciais inválidas.");
-    }
-
+    await assertUserCredencials(user, dto.password);
     const token = await this.generateToken(user);
     return { accessToken: token };
   }
 
-  private generateToken(user: { id: number; email: string }) {
+  private generateToken(user: UserEntity) {
     return this.jwtService.signAsync({
       sub: user.id,
       email: user.email,

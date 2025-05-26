@@ -21,6 +21,12 @@ export class UsersService {
     return this.usersRepository.createFromEntity(entity);
   }
 
+  async findByEmail(email: string): Promise<UserEntity> {
+    const user = await this.usersRepository.findByEmail(email);
+    assertUserNotFound(user);
+    return user;
+  }
+
   async findById(id: number): Promise<UserEntity> {
     const user = await this.usersRepository.findById(id);
     assertUserNotFound(user);
