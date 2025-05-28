@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "@modules/auth/dto/login.dto";
 import { AuthResponseDto } from "@modules/auth/dto/auth-response.dto";
@@ -21,15 +21,9 @@ export class AuthService {
   }
 
   private generateToken(user: UserEntity) {
-    return this.jwtService.signAsync(
-      {
-        sub: user.id,
-        email: user.email,
-      },
-      {
-        expiresIn: process.env.JWT_EXPIRES_IN ?? "7d",
-        subject: String(user.id),
-      }
-    );
+    return this.jwtService.signAsync({
+      sub: user.id,
+      email: user.email,
+    });
   }
 }

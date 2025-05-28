@@ -5,7 +5,7 @@ export function assertUserAlreadyExists(
   user: UserEntity | null,
   message: string = "Usuário já registrado"
 ): asserts user is UserEntity {
-  if (!user) {
+  if (user) {
     throw new ConflictException(message);
   }
 }
