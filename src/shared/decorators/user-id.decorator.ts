@@ -3,6 +3,6 @@ import { createParamDecorator, ExecutionContext } from "@nestjs/common";
 export const UserId = createParamDecorator(
   (data: unknown, ctx: ExecutionContext): number | null => {
     const request = ctx.switchToHttp().getRequest();
-    return request.user?.userId ?? null;
+    return request.user?.id ?? null;
   }
 );

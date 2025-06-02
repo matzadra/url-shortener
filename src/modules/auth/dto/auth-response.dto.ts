@@ -1,3 +1,3 @@
 export class AuthResponseDto {
-  accessToken: string;
+  constructor(public readonly accessToken: string) {}
 }
